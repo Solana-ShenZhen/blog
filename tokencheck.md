@@ -1,6 +1,8 @@
-# 教你判断代币是否有可能是老鼠仓，貔貅盘
+# 教你代币安全监测
 
-本文将简单判断代币是否是老鼠仓，貔貅盘以及计算计算 LP 燃烧的比例。判断代币是否是老鼠仓或者是貔貅盘，本质上是看代币的 `mint authority` 以及 `freeze authority`是否还在。计算LP燃烧的比例则是直接通过pool的address，来看这个池子里的lp供应量（supply） 和 储备量，来计算整个的比例判断burn了的比例
+炒币的时候经常会遇到一些盘，如果你盲目的冲进去，可能就完蛋了。比如说 `https://dexscreener.com/solana/36kqsauU1HLRxecizvXWMosV1t1mQEeaeXDEfZLvkRY4` 这个盘，最高的时候涨到773.2M，然后迅速砸盘，一切都发生在三个小时以内。这就是因为他的mint authority还存在，每当有人买入，他就迅速冻结那个人币，导致别人只能买不能卖。你现在看这个盘可能发现mint authority已经是none了，但是之前是还有的，他修改authority是`https://solscan.io/tx/3v3EuUm19Vii9vNNfexvgg7rFgy1wcmtGQemRZ94yUsk1awY9eLRGPpVUPMPxmL5WsDUi5Du8a5Ray4V1eCb55ot`这个交易。
+
+本文将简单判断代币是否是貔貅盘以及计算计算 LP 燃烧的比例。判断代币是否还有mint权限是看`mint authority` ,判断代币是否是貔貅盘，本质上是看代币的  `freeze authority`是否还在。计算LP燃烧的比例则是直接通过pool的address，来看这个池子里的lp供应量（supply） 和 储备量，来计算整个的比例判断burn了的比例
 先引入一些包
 
 ```ts
@@ -49,9 +51,7 @@ class BoolLayout extends Layout<boolean> {
 
 const bool = (property: string) => new BoolLayout(property);
 ```
-
 接下来就是定义token的结构
-
 ```ts
 export interface Token {
   mintAuthorityOption: 1 | 0;
@@ -91,9 +91,7 @@ export const fetchAndParseMint = async (
   }
 };
 ```
-
 获取池子的信息 然后计算比例
-
 ```ts
 export const fetchLiqudityPoolState = async (
   pool: PublicKey,
@@ -129,5 +127,4 @@ export const fetchLiqudityPoolState = async (
   }
 };
 ```
-
-完整的代码可以参考我的github(`https://github.com/brooke007/tokencheck`)
+完整的代码可以参考[我的github](`https://github.com/brooke007/tokencheck`)
